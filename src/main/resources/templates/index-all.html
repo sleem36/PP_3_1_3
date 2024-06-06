@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body class="container">
+
+<h1 th:text="${test}"  style="text-align: center"></h1>
+<br>
+<a href="/logout">Выйти</a>
+<br><br>
+<table class="table table-striped">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>LastName</th>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Operations</th>
+    </tr>
+<th:block th:each="user : ${users}">
+    <tr>
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.name}"></td>
+        <td th:text="${user.lastName}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.password}"></td>
+        <td style="display: flex">
+            <a th:href="@{/admin/edit?userId={userId}(userId=${user.id})}" class="btn btn-info" role="button">Изменить</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/delete?userId={userId}(userId=${user.id})}" class="btn btn-danger mx-3" role="button">Удалить</a>
+        </td>
+    </tr>
+</th:block>
+</table>
+<br>
+
+    <input type="button" value="Добавить" onclick="window.location.href = '/new'" class="btn btn-primary">
+
+
+
+</body>
+</html>
