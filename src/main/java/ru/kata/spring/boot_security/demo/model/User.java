@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -16,9 +17,16 @@ public class User {
 
     @ManyToMany
     @JoinTable(name = "users_roles",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
+
+
+    public User(String name, String password, Collection<Role> roles) {
+        this.name = name;
+        this.password = password;
+        this.roles = roles;
+    }
 
     public int getId() {
         return id;
@@ -61,19 +69,9 @@ public class User {
     @Column(name="id")
     private int id;
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     @Column(name = "name")
     private String name;
 
-    @Column(name = "roles")
-    private String role;
     public String getPassword() {
         return password;
     }
@@ -81,6 +79,11 @@ public class User {
     public Collection<Role> getRoles() {
         return roles;
     }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
+
 
     @Column(name = "email")
     private String email;
@@ -96,6 +99,11 @@ public class User {
         this.name = name;
         this.email = email;
         this.lastName = lastName;
+        this.password = password;
+    }
+
+    public User(String name, String password) {
+        this.name = name;
         this.password = password;
     }
 

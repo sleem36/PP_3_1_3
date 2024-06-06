@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ru.kata.spring.boot_security.demo.dao.RoleRepository;
 import ru.kata.spring.boot_security.demo.dao.UserRepository;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -23,11 +24,13 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserDetailsService {
 
-     private UserRepository userRepository;
+    private UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 //    // private final PasswordEncoder passwordEncoder;
 
@@ -47,9 +50,26 @@ public class UserServiceImpl implements UserDetailsService {
         return userRepository.findAll();
     }
 
+//    public void saveUser(User user) {
+//        Role role = roleRepository.findByName("ROLE_USER");
+//        user.getRoles().add(role);
+//        role.addUser(user);
+//        userRepository.save(user);
+//        roleRepository.save(role);
+//    }
+
+
+    public void saveUserWithRoles(User user, String email, String lastName, Collection<Role> roles) {
+        user.setEmail(email);
+        user.setLastName(lastName);
+        user.getRoles().addAll(roles);
+        userRepository.save(user);
+    }
+
+
     public void saveUser(User user) {
-      //  user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("ROLE_USER");
+        //  user.setPassword(passwordEncoder.encode(user.getPassword()));
+        //user.setRole("ROLE_USER");
         userRepository.save(user);
     }
 
@@ -85,9 +105,7 @@ public class UserServiceImpl implements UserDetailsService {
                 mapRolesToAuthorities(user.getRoles()));
     }
 
-    public Collection<? extends GrantedAuthority> mapRolesToAuthorities(
-            Collection<Role> roles
-    ) {
+    public Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName()))
                 .collect(Collectors.toList());
     }
