@@ -50,16 +50,42 @@ public class UserController {
         return "index-info";
     }
 
-    @PostMapping("/admin")
-    public String saveUser(@ModelAttribute("userAdd") User user, @RequestParam("roleIds") List<Long> roleIds) {
-        List<Integer> roleIntIds = roleIds.stream()
-                .map(Long::intValue)
-                .collect(Collectors.toList());
+//    @PostMapping("/admin")
+//    public String saveUser(@ModelAttribute("userAdd") User user, @RequestParam("roleIds") List<Long> roleIds) {
+//        List<Integer> roleIntIds = roleIds.stream()
+//                .map(Long::intValue)
+//                .collect(Collectors.toList());
+//
+//        List<Role> roles = new ArrayList<>(roleRepository.findAllById(roleIntIds));
+//        userService.saveUserWithRoles(user, user.getEmail(), user.getName(), new ArrayList<>(roles)); // Создаем новую изменяемую коллекцию для передачи в сервис
+//        return "redirect:/admin";
+//    }
 
-        List<Role> roles = new ArrayList<>(roleRepository.findAllById(roleIntIds));
-        userService.saveUserWithRoles(user, user.getEmail(), user.getName(), new ArrayList<>(roles)); // Создаем новую изменяемую коллекцию для передачи в сервис
-        return "redirect:/admin";
+    @PostMapping("/admin")
+    public String saveUser(@ModelAttribute("userAdd") User user) {
+        List<Long> roleIds = user.getRoleIds();
+
+//        if (roleIds != null) {
+            List<Integer> roleIntIds = roleIds.stream()
+                    .map(Long::intValue)
+                    .collect(Collectors.toList());
+
+            List<Role> roles = new ArrayList<>(roleRepository.findAllById(roleIntIds));
+
+            if (user.getRoles() == null) {
+                user.setRoles(new ArrayList<>()); // Создаем новый список, если getRoles() возвращает null
+            }
+
+           // user.getRoles().addAll(roles); // Добавляем роли к существующему списку
+
+          userService.saveUserWithRoles(user, new ArrayList<>(roles));
+            return "redirect:/admin";
+//        } else {
+//            return "redirect:/admin/error";
+//        }
     }
+
+
 
 //    @PostMapping("/admin")
 //    public String saveUser (@ModelAttribute("userAdd") User user) {

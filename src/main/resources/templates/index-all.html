@@ -17,7 +17,7 @@
         <th>Name</th>
         <th>LastName</th>
         <th>Email</th>
-        <th>Password</th>
+        <th>Age</th>
         <th>Operations</th>
     </tr>
 <th:block th:each="user : ${users}">
@@ -26,7 +26,7 @@
         <td th:text="${user.name}"></td>
         <td th:text="${user.lastName}"></td>
         <td th:text="${user.email}"></td>
-        <td th:text="${user.password}"></td>
+        <td th:text="${user.age}"></td>
         <td style="display: flex">
             <a th:href="@{/admin/edit?userId={userId}(userId=${user.id})}" class="btn btn-info" role="button">Изменить</a>
             <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/delete?userId={userId}(userId=${user.id})}" class="btn btn-danger mx-3" role="button">Удалить</a>

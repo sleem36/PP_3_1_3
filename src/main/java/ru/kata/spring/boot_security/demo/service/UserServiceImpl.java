@@ -1,7 +1,5 @@
 package ru.kata.spring.boot_security.demo.service;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,44 +30,24 @@ public class UserServiceImpl implements UserDetailsService {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
-//    // private final PasswordEncoder passwordEncoder;
-
-//    @Autowired
-//    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-//        this.userRepository = userRepository;
-//      //  this.passwordEncoder = passwordEncoder;
-//    }
-
-//    @Override
-//    public void saveUser(User user) {
-//        userRepository.save(user);
-//    }
-
 
     public List<User> getAll() {
         return userRepository.findAll();
     }
 
-//    public void saveUser(User user) {
-//        Role role = roleRepository.findByName("ROLE_USER");
-//        user.getRoles().add(role);
-//        role.addUser(user);
-//        userRepository.save(user);
-//        roleRepository.save(role);
-//    }
-
-
-    public void saveUserWithRoles(User user, String email, String lastName, Collection<Role> roles) {
+    public void saveUserWithRoles(User user, Collection<Role> roles) {
+        user.getRoles().addAll(roles);
+        userRepository.save(user);
+    }
+    public void saveUserInit(User user, String email, String lastName, int age, Collection<Role> roles) {
         user.setEmail(email);
         user.setLastName(lastName);
+        user.setAge(age);
         user.getRoles().addAll(roles);
         userRepository.save(user);
     }
 
-
     public void saveUser(User user) {
-        //  user.setPassword(passwordEncoder.encode(user.getPassword()));
-        //user.setRole("ROLE_USER");
         userRepository.save(user);
     }
 
@@ -87,7 +65,6 @@ public class UserServiceImpl implements UserDetailsService {
         userRepository.deleteById(id);
         return null;
     }
-
 
     public User findByName(String name) {
         return userRepository.findByName(name);

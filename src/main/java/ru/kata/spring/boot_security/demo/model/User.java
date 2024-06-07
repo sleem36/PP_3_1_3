@@ -1,14 +1,9 @@
 package ru.kata.spring.boot_security.demo.model;
 
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 
 @Entity
@@ -21,6 +16,25 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
+    private int id;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "age")
+    private int age;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "password")
+    private String password;
 
     public User(String name, String password, Collection<Role> roles) {
         this.name = name;
@@ -30,6 +44,10 @@ public class User {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -60,18 +78,6 @@ public class User {
         this.password = password;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private int id;
-
-    @Column(name = "name")
-    private String name;
-
     public String getPassword() {
         return password;
     }
@@ -80,23 +86,26 @@ public class User {
         return roles;
     }
 
-    public void setRoles(Collection<Role> roles) {
+    public List<Long> setRoles(Collection<Role> roles) {
         this.roles = roles;
+        return null;
     }
 
+    @ElementCollection
+    private List<Long> roleIds;
 
-    @Column(name = "email")
-    private String email;
+    public List<Long> getRoleIds() {
+        return roleIds;
+    }
 
-    @Column(name = "last_name")
-    private String lastName;
+    public void setRoleIds(List<Long> roleIds) {
+        this.roleIds = roleIds;
+    }
 
-    @Column(name = "password")
-    private String password;
-
-    public User(int id, String name, String email, String lastName, String password) {
+    public User(int id, String name, int age, String email, String lastName, String password) {
         this.id = id;
         this.name = name;
+        this.age = age;
         this.email = email;
         this.lastName = lastName;
         this.password = password;
@@ -111,36 +120,13 @@ public class User {
 
     }
 
-//
-//    @Override
-//    public String getPassword() {
-//        return this.password;
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return this.name;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return true;
-//    }
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 
     @Override
     public String toString() {

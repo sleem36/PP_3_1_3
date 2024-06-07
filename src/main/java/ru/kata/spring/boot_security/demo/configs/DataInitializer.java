@@ -49,8 +49,8 @@ public class DataInitializer implements ApplicationRunner {
         admin.setRoles(adminRoles);
 
 
-        userService.saveUserWithRoles(user, "user@test.com","user_test", userRoles);
-        userService.saveUserWithRoles(admin, "admin@test.com","admin_test", adminRoles);
+        userService.saveUserInit(user, "user@test.com","user_test", 22, userRoles);
+        userService.saveUserInit(admin, "admin@test.com","admin_test", 36, adminRoles);
     }
 
     @Override
