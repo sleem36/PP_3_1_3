@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <meta charset="UTF-8">
@@ -9,8 +11,9 @@
 
 <h1 th:text="${test}"  style="text-align: center"></h1>
 <br>
-<a href="/logout">Выйти</a>
+<a href="/logout" class="btn btn-warning"><b>Выход</b> (<span sec:authentication="name"></span>) </a>
 <br><br>
+
 <table class="table table-striped">
     <tr>
         <th>ID</th>
@@ -18,7 +21,9 @@
         <th>LastName</th>
         <th>Email</th>
         <th>Age</th>
-        <th>Operations</th>
+        <div sec:authorize="hasRole('ADMIN')">
+            <th>Operations</th>
+        </div>
     </tr>
 <th:block th:each="user : ${users}">
     <tr>
@@ -27,16 +32,19 @@
         <td th:text="${user.lastName}"></td>
         <td th:text="${user.email}"></td>
         <td th:text="${user.age}"></td>
-        <td style="display: flex">
-            <a th:href="@{/admin/edit?userId={userId}(userId=${user.id})}" class="btn btn-info" role="button">Изменить</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/delete?userId={userId}(userId=${user.id})}" class="btn btn-danger mx-3" role="button">Удалить</a>
-        </td>
+        <div sec:authorize="hasRole('ADMIN')">
+            <td style="display: flex">
+                <a th:href="@{/admin/edit?userId={userId}(userId=${user.id})}" class="btn btn-info" role="button">Изменить</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/delete?userId={userId}(userId=${user.id})}" class="btn btn-danger mx-3" role="button">Удалить</a>
+            </td>
+        </div>
     </tr>
 </th:block>
 </table>
 <br>
-
+<div sec:authorize="hasRole('ADMIN')">
     <input type="button" value="Добавить" onclick="window.location.href = '/new'" class="btn btn-primary">
+</div>
 
 
 

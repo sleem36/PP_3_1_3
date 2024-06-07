@@ -1,7 +1,5 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-
-import com.mysql.cj.xdevapi.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +8,6 @@ import ru.kata.spring.boot_security.demo.dao.RoleRepository;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
-
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +18,12 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private UserServiceImpl userService;
-    private RoleRepository roleRepository; // Добавьте RoleRepository
+    private RoleRepository roleRepository;
 
     @Autowired
     public UserController(UserServiceImpl userService, RoleRepository roleRepository) {
         this.userService = userService;
-        this.roleRepository = roleRepository; // Инициализируйте RoleRepository
+        this.roleRepository = roleRepository;
     }
     @GetMapping("/admin")
     public String all (Model model) {
@@ -50,56 +47,19 @@ public class UserController {
         return "index-info";
     }
 
-//    @PostMapping("/admin")
-//    public String saveUser(@ModelAttribute("userAdd") User user, @RequestParam("roleIds") List<Long> roleIds) {
-//        List<Integer> roleIntIds = roleIds.stream()
-//                .map(Long::intValue)
-//                .collect(Collectors.toList());
-//
-//        List<Role> roles = new ArrayList<>(roleRepository.findAllById(roleIntIds));
-//        userService.saveUserWithRoles(user, user.getEmail(), user.getName(), new ArrayList<>(roles)); // Создаем новую изменяемую коллекцию для передачи в сервис
-//        return "redirect:/admin";
-//    }
-
     @PostMapping("/admin")
-    public String saveUser(@ModelAttribute("userAdd") User user) {
+    public String saveUser(@ModelAttribute("userAdd") User user, Principal principal) {
         List<Long> roleIds = user.getRoleIds();
-
-//        if (roleIds != null) {
             List<Integer> roleIntIds = roleIds.stream()
                     .map(Long::intValue)
                     .collect(Collectors.toList());
-
             List<Role> roles = new ArrayList<>(roleRepository.findAllById(roleIntIds));
-
             if (user.getRoles() == null) {
                 user.setRoles(new ArrayList<>()); // Создаем новый список, если getRoles() возвращает null
             }
-
-           // user.getRoles().addAll(roles); // Добавляем роли к существующему списку
-
           userService.saveUserWithRoles(user, new ArrayList<>(roles));
             return "redirect:/admin";
-//        } else {
-//            return "redirect:/admin/error";
-//        }
     }
-
-
-
-//    @PostMapping("/admin")
-//    public String saveUser (@ModelAttribute("userAdd") User user) {
-//        //  userService.;
-//        userService.saveUser(user);
-//        return "redirect:/admin";
-//    }
-
-
-//    @PostMapping("/admin")
-//    public String saveUser(@ModelAttribute("userAdd") User user, @RequestParam("roles") Collection<Role> roles) {
-//        userService.saveUser(user, roles); // Передаем пользователя и коллекцию ролей в сервис для сохранения
-//        return "redirect:/admin";
-//    }
 
     @GetMapping("/admin/edit")
     public String updateUser(@RequestParam("userId") int id, Model model) {
