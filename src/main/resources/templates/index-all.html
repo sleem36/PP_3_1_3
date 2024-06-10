@@ -76,7 +76,7 @@
                             <div sec:authorize="hasRole('ADMIN')">
                                 <td style="display: flex">
                                     <a th:href="@{/admin/edit?userId={userId}(userId=${user.id})}" class="btn btn-info edit_b" role="button">Edit</a>
-                                    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/delete?userId={userId}(userId=${user.id})}" class="btn btn-danger mx-3 del_b" role="button">Delete</a>
+                                    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/delete-get?userId={userId}(userId=${user.id})}" class="btn btn-danger mx-3 del_b" role="button">Delete</a>
                                 </td>
                             </div>
                         </tr>
@@ -180,7 +180,7 @@
         $('.del_b').click(function() {
             event.preventDefault();
             var userId = $(this).attr('href').match(/userId=(\d+)/)[1];
-            $('#modalContentDelete').load('/admin/delete?userId=' + userId + ' #form_del');
+            $('#modalContentDelete').load('/admin/delete-get?userId=' + userId + ' #form_del');
             $('#myModalDelete').modal('show');
         });
     });
