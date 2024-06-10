@@ -6,6 +6,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.dao.RoleRepository;
 import ru.kata.spring.boot_security.demo.dao.UserRepository;
@@ -35,9 +37,12 @@ public class UserServiceImpl implements UserDetailsService {
     }
 
     public void saveUserWithRoles(User user, Collection<Role> roles) {
+        PasswordEncoder passwordEncoder2 = new BCryptPasswordEncoder();
+        user.setPassword(passwordEncoder2.encode(user.getPassword()));
         user.getRoles().addAll(roles);
         userRepository.save(user);
     }
+
     public void saveUserInit(User user, String email, String lastName, int age, Collection<Role> roles) {
         user.setEmail(email);
         user.setLastName(lastName);
@@ -58,7 +63,6 @@ public class UserServiceImpl implements UserDetailsService {
         }
         return user;
     }
-
 
     public User deleteUser(int id) {
         userRepository.deleteById(id);
