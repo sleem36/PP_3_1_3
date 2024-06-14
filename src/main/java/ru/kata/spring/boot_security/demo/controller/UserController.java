@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,12 +12,14 @@ import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
 import java.util.stream.Collectors;
 
 
 @Controller
 public class UserController {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private UserServiceImpl userService;
     private RoleRepository roleRepository;
 
@@ -48,6 +51,7 @@ public class UserController {
 
     @PostMapping("/admin")
     public String saveUser(@ModelAttribute("userAdd") User user, Principal principal) {
+        logger.info("Получен запрос на сохранение пользователя: {}", user.getName());
         List<Long> roleIds = user.getRoleIds();
             List<Integer> roleIntIds = roleIds.stream()
                     .map(Long::intValue)
@@ -64,6 +68,7 @@ public class UserController {
     public String updateUser(@RequestParam("userId") int id, Model model) {
         User user = userService.getUser(id);
         model.addAttribute("userAdd", user);
+        logger.info("Получен запрос на обновление пользователя: {}", user.getName());
         return "index-info";
     }
 
@@ -71,12 +76,14 @@ public class UserController {
     public String deleteGetUser(@RequestParam("userId") int id, Model model) {
         User user = userService.getUser(id);
         model.addAttribute("userDel", user);
+        logger.info("Получен запрос на удаление пользователя (подготовка к удалению): {}", user.getName());
         return "index-info";
     }
 
     @GetMapping("/admin/delete")
     public String deleteUser(@RequestParam("userId") int id, Model model) {
         User user = userService.deleteUser(id);
+        logger.info("Удален пользователь с id={}", id);
         return "redirect:/admin";
     }
 
